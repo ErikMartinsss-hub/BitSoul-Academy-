@@ -1,28 +1,142 @@
-import { useState } from 'react'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { parseQuestionsFromPDF } from './utils/pdfParser';
+import './App.css';
+
+// Sua configuração do Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAF4qRhibrwKQECeQgAidVfVEVuW9u1LnA",
+  authDomain: "quiz-7668d.firebaseapp.com",
+  projectId: "quiz-7668d",
+  storageBucket: "quiz-7668d.firebasestorage.app",
+  messagingSenderId: "278308983499",
+  appId: "1:278308983499:web:233fbb2ac0a26b0511c14e",
+  measurementId: "G-HSB5R955LB"
+};
+
+// Inicializa o Firebase e o Firestore
+const app = initializeApp(firebaseConfig);
+let analytics;
+try { analytics = getAnalytics(app); } catch (e) { console.warn("Analytics not available:", e); }
+const db = getFirestore(app);
 
 function App() {
-  const questions = [
-    { id: 1, question: "Os valores do Scrum devem ser incorporados pelo Scrum Team e são essenciais para o sucesso dos projetos. Qual das opções apresenta os valores do Scrum?", options: ["Integridade, cuidado, confiabilidade, conformidade.", "Foco, adaptação, resiliência, pensamento sistêmico.", "Liderança, tailoring, partes interessadas.", "Compromisso, foco, abertura, respeito, coragem, planejamento, entrega e medição.", "Compromisso, foco, abertura, respeito e coragem."], answer: 4 },
-    { id: 2, question: "Qual das alternativas a seguir é um dos princípios do Guia PMBOK 7?", options: ["Monitoramento", "Planejamento", "Execução", "Escopo", "Partes interessadas"], answer: 4 },
-    { id: 3, question: "O que é uma abordagem de desenvolvimento segundo o Guia PMBOK?", options: ["Abordagem usada para desenvolver sistemas de informação.", "Abordagem usada para desenvolver projetos baseada nos métodos ágeis.", "Abordagem adotada para desenvolver entregas durante o ciclo de vida do projeto.", "Método usado para desenvolver projetos baseado no princípio de tailoring.", "Método usado e originado no manifesto ágil."], answer: 2 },
-    { id: 4, question: "Qual dos artefatos a seguir poderia ser usado em uma abordagem de desenvolvimento preditiva para definir ou revisar o que será feito?", options: ["Por meio do product backlog.", "Por meio do sprint backlog.", "Por meio do escopo do projeto e da sua estrutura analítica.", "Por meio do orçamento.", "Por meio do registro das questões."], answer: 2 },
-    { id: 5, question: "Os domínios de desempenho são uma das grandes novidades da sétima edição do Guia PMBOK. Qual das opções a seguir define melhor um domínio de desempenho?", options: ["Um domínio de desempenho do projeto é um grupo de atividades relacionadas que são críticas para a entrega eficaz dos resultados do projeto.", "Um domínio de desempenho do projeto é a combinação dos grupos de processos com as áreas de conhecimento do projeto.", "Um domínio de desempenho do projeto é uma área identificada de gerenciamento de projetos definida por seus requisitos de conhecimentos e descrita em termos dos processos que a compõem.", "Um domínio de desempenho do projeto é um agrupamento lógico de entradas, ferramentas, técnicas e saídas de gerenciamento de projetos.", "Um domínio de desempenho do projeto é uma série de atividades sistemáticas para criar uma ou mais saídas."], answer: 0 },
-    { id: 6, question: "Qual das alternativas é um resultado esperado do domínio de desempenho de partes interessadas?", options: ["Propriedade compartilhada.", "Partes interessadas identificadas.", "Uma relação de trabalho produtiva com as partes interessadas ao longo do projeto.", "As partes interessadas que podem se opor ao projeto ou às suas entregas podem afetar negativamente os resultados do projeto.", "As partes interessadas têm conflitos em relação aos objetivos do projeto."], answer: 2 },
-    { id: 7, question: "Qual das alternativas a seguir se refere a uma das mudanças trazidas pelo Guia PMBOK 7?", options: ["Reduziu os processos de 49 para 32.", "Foi de referência detalhada em processos para orientador com princípios.", "Trocou a abordagem de processos ITO para processos mais ágeis.", "Adotou os princípios do manifesto ágil.", "Adotou os valores do manifesto ágil."], answer: 1 },
-    { id: 8, question: "Qual das situações abaixo é relacionada a um princípio do Guia PMBOK 7?", options: ["Reconheça, avalie e reaja às interações do sistema.", "Nossa maior prioridade é satisfazer o cliente mediante a entrega contínua e adiantada de software com valor agregado.", "Mudanças nos requisitos são bem-vindas, mesmo que tardiamente no desenvolvimento.", "Entregar frequentemente software funcionando, de poucas semanas a poucos meses.", "Pessoas de negócio e desenvolvedores devem trabalhar diariamente em conjunto por todo o projeto."], answer: 0 },
-    { id: 9, question: "Qual o Timebox (tempo limite) da Daily Scrum para sincronização do time?", options: ["30 minutos", "1 hora", "15 minutos", "5 minutos", "Não há tempo limite"], answer: 2 },
-    { id: 10, question: "No Kanban, qual a principal função de visualizar o fluxo no quadro?", options: ["Limitar o WIP (Work In Progress) e gerenciar o fluxo de valor.", "Substituir o planejamento da Sprint.", "Apenas para decoração da sala.", "Microgerenciar as tarefas dos desenvolvedores.", "Eliminar a necessidade de reuniões."], answer: 0 },
-    { id: 11, question: "O Guia PMBOK 7ª edição introduziu uma mudança estrutural significativa. Quantos são os princípios de entrega de projetos estabelecidos nesta edição?", options: ["São 10 princípios.", "São 5 princípios.", "São 12 princípios.", "São 8 princípios.", "São 49 princípios."], answer: 2 },
-    { id: 12, question: "No método Kanban, qual é a estrutura básica de estágios (camadas de fluxo) necessária para a visualização inicial do trabalho em um quadro?", options: ["Apenas uma camada de Execução.", "Duas camadas: Início e Fim.", "Três camadas: A fazer (To Do), Fazendo (Doing) e Feito (Done).", "Cinco camadas baseadas nos grupos de processos.", "Não existem camadas no método Kanban."], answer: 2 }
-  ];
+  const [dados, setDados] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [selectedCollege, setSelectedCollege] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [questions, setQuestions] = useState([]);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [userHistory, setUserHistory] = useState([]); // Histórico para análise
+  const [userHistory, setUserHistory] = useState([]);
+
+  const [showUpload, setShowUpload] = useState(false);
+  const [pdfParsing, setPdfParsing] = useState(false);
+  const [pdfError, setPdfError] = useState('');
+  const [pdfFileName, setPdfFileName] = useState('');
+  const [isPdfQuiz, setIsPdfQuiz] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "AVALIACOES"));
+        const listaAvaliacoes = querySnapshot.docs.map(doc => ({
+          _id: doc.id,
+          ...doc.data()
+        }));
+        
+        setDados(listaAvaliacoes);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao buscar questões do Firestore:", error);
+        // Fallback para não quebrar a aplicação caso a coleção esteja vazia ou em branco
+        setDados([
+          {
+            _id: "fallback-id",
+            disciplina: "NoSQL",
+            instituicao: "Análise e Desenvolvimento de Sistemas (Estácio)",
+            questoes: [
+              {
+                id: 1,
+                enunciado: "Sobre o código apresentado a seguir, podemos afirmar, exceto...",
+                alternativas: [
+                  "A) Existe uma chave primária tripla.",
+                  "B) A função toTimestamp permite obter o valor timestamp.",
+                  "C) A função now permite o preenchimento do atributo timeuuid.",
+                  "D) A tabela tem dois atributos no campo chave de partição.",
+                  "E) A tabela tem o campo datahora como chave de armazenamento em clusters."
+                ],
+                resposta_correta: 0
+              }
+            ],
+            data_criacao: "2026-05-04T22:35:00.000Z"
+          }
+        ]);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const getInstitutions = () => {
+    const instList = {};
+    if (!Array.isArray(dados)) return {};
+
+    dados.forEach((item) => {
+      const instituicaoNome = item.instituicao || "Análise e Desenvolvimento de Sistemas (Estácio)";
+      const disciplinaNome = item.disciplina || "NoSQL";
+
+      if (!instList[instituicaoNome]) {
+        instList[instituicaoNome] = {};
+      }
+      if (!instList[instituicaoNome][disciplinaNome]) {
+        instList[instituicaoNome][disciplinaNome] = [];
+      }
+      
+      if (item.questoes) {
+        item.questoes.forEach((q) => {
+          instList[instituicaoNome][disciplinaNome].push({
+            id: q.id,
+            question: q.enunciado || q.question,
+            options: q.alternativas || q.options,
+            answer: q.resposta_correta !== undefined ? q.resposta_correta : q.answer
+          });
+        });
+      }
+    });
+    return instList;
+  };
+
+  const data = getInstitutions();
+
+  const handleSelectCollege = (college) => {
+    setSelectedCollege(college);
+    setSelectedSubject(null);
+    setShowUpload(false);
+  };
+
+  const handleUploadClick = () => {
+    setShowUpload(true);
+    setSelectedCollege(null);
+    setSelectedSubject(null);
+    setPdfError('');
+    setPdfFileName('');
+  };
+
+  const handleSelectSubject = (subject) => {
+    setSelectedSubject(subject);
+    if (selectedCollege && data[selectedCollege]) {
+      setQuestions(data[selectedCollege][subject] || []);
+    }
+  };
 
   const handleSelect = (index) => {
     if (!isConfirmed) setSelectedOption(index);
@@ -33,15 +147,20 @@ function App() {
 
     if (!isConfirmed) {
       setIsConfirmed(true);
-      const correct = questions[currentQuestion].answer;
-      const isRight = selectedOption === correct;
-      
-      // Salva no histórico
-      setUserHistory([...userHistory, {
-        question: questions[currentQuestion].question,
-        isCorrect: isRight,
-        correctText: questions[currentQuestion].options[correct]
-      }]);
+      const correctIndex = questions[currentQuestion]?.answer;
+      const hasAnswer = correctIndex !== undefined && correctIndex >= 0;
+      const isRight = hasAnswer ? selectedOption === correctIndex : false;
+
+      setUserHistory([
+        ...userHistory,
+        {
+          question: questions[currentQuestion]?.question,
+          isCorrect: isRight,
+          correctText: hasAnswer ? questions[currentQuestion]?.options[correctIndex] : null,
+          hasAnswer,
+          selectedText: questions[currentQuestion]?.options[selectedOption]
+        }
+      ]);
 
       if (isRight) setScore(score + 1);
     } else {
@@ -56,63 +175,280 @@ function App() {
     }
   };
 
-  // Função para gerar dica de melhoria
   const getImprovementTip = (qText) => {
-    if (qText.includes("Scrum")) return "Revise os 5 Valores e o Timebox (15min) no Guia Scrum.";
-    if (qText.includes("PMBOK 7")) return "Estude os 12 Princípios e os 8 Domínios de Desempenho.";
-    if (qText.includes("Kanban")) return "Foque em Limitação de WIP e visualização do Fluxo de Valor.";
-    if (qText.includes("preditiva")) return "Revise EAP e Escopo em projetos Waterfall.";
-    return "Revise os fundamentos de abordagens ágeis vs preditivas.";
-  }
+    if (qText && (qText.includes("Cassandra") || qText.includes("CQL"))) {
+      return "Foque em chaves de partição, chaves de agrupamento e limitações do CQL.";
+    }
+    return "Revise os conceitos e estruturas de banco de dados do material.";
+  };
+
+  const handleFileUpload = async (file) => {
+    if (!file || file.type !== 'application/pdf') {
+      setPdfError('Por favor, selecione um arquivo PDF v\u00e1lido.');
+      return;
+    }
+
+    setPdfFileName(file.name);
+    setPdfParsing(true);
+    setPdfError('');
+
+    try {
+      const result = await parseQuestionsFromPDF(file);
+
+      if (result.empty || result.questions.length === 0) {
+        const preview = result.rawText
+          ? result.rawText.substring(0, 400).replace(/[^\x20-\x7E\xA0-\xFF\n\r]/g, '')
+          : '(texto vazio)';
+        setPdfError(
+          'N\u00e3o foi poss\u00edvel extrair quest\u00f5es deste PDF. ' +
+          'Verifique se o PDF cont\u00e9m texto selecion\u00e1vel (n\u00e3o \u00e9 um documento escaneado) ' +
+          'e se as quest\u00f5es seguem um formato num\u00e9rico (01., 02., etc.) com alternativas ((A), (B), etc.).\n\n' +
+          'Texto extra\u00eddo (in\u00edcio):\n' + preview
+        );
+        setPdfParsing(false);
+        return;
+      }
+
+      setIsPdfQuiz(!result.hasAnswers);
+      setQuestions(result.questions);
+      setSelectedCollege(`PDF: ${file.name}`);
+      setSelectedSubject('Simulado');
+      setShowUpload(false);
+      setPdfParsing(false);
+    } catch (err) {
+      console.error('Erro ao processar PDF:', err);
+      setPdfError(`Erro ao processar o PDF: ${err.message}`);
+      setPdfParsing(false);
+    }
+  };
+
+  const handleRestart = () => {
+    setSelectedCollege(null);
+    setSelectedSubject(null);
+    setQuestions([]);
+    setCurrentQuestion(0);
+    setSelectedOption(null);
+    setIsConfirmed(false);
+    setScore(0);
+    setShowScore(false);
+    setUserHistory([]);
+    setShowUpload(false);
+    setPdfParsing(false);
+    setPdfError('');
+    setPdfFileName('');
+    setIsPdfQuiz(false);
+  };
 
   return (
     <section id="quiz-container">
       <h1 className="title">BitSoul Academy 🎓</h1>
-      <div className="card">
-        {showScore ? (
-          <div className="score-section">
-            <h2>Resultado: {score}/{questions.length}</h2>
-            <div className="analysis-box">
-              {userHistory.map((item, index) => (
-                <div key={index} className={`analysis-item ${item.isCorrect ? 'item-correct' : 'item-wrong'}`}>
-                  <p><strong>Q{index + 1}:</strong> {item.isCorrect ? "✅ " : "❌ "}{item.question}</p>
-                  {!item.isCorrect && <p className="tip">💡 <strong>Melhorar:</strong> {getImprovementTip(item.question)}</p>}
-                </div>
+
+      {loading ? (
+        <div className="card">
+          <h2>Carregando questões do Firestore...</h2>
+        </div>
+      ) : showUpload ? (
+        <div className="card">
+          <h2>Enviar PDF para Simulado</h2>
+          <p className="upload-hint">
+            Envie um PDF com perguntas de multipla escolha. O sistema extraira as perguntas
+            e alternativas automaticamente.
+          </p>
+          <div
+            className="upload-zone"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const file = e.dataTransfer.files[0];
+              if (file) handleFileUpload(file);
+            }}
+          >
+            <input
+              type="file"
+              accept=".pdf"
+              id="pdf-input"
+              className="file-input"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) handleFileUpload(file);
+              }}
+            />
+            <label htmlFor="pdf-input" className="file-label">
+              {pdfFileName ? `📄 ${pdfFileName}` : 'Clique ou arraste um PDF aqui'}
+            </label>
+          </div>
+          {pdfParsing && (
+            <div className="parsing-status">
+              <p>Processando PDF... Isso pode levar alguns segundos.</p>
+            </div>
+          )}
+          {pdfError && (
+            <div className="error-box">
+              <p>{pdfError}</p>
+            </div>
+          )}
+          <button
+            className="confirm-button restart-btn"
+            onClick={() => setShowUpload(false)}
+            disabled={pdfParsing}
+          >
+            Voltar
+          </button>
+        </div>
+      ) : !selectedCollege ? (
+        <div className="card">
+          <h2>Selecione a sua instituição de ensino:</h2>
+          <div className="subject-selection">
+            {Object.keys(data).length === 0 ? (
+              <p>Nenhuma instituição carregada do banco de dados.</p>
+            ) : (
+              Object.keys(data).map((college, index) => (
+                <button
+                  key={index}
+                  className="confirm-button subject-btn"
+                  onClick={() => handleSelectCollege(college)}
+                >
+                  {college} 🏛️
+                </button>
+              ))
+            )}
+          </div>
+          <div className="upload-divider">
+            <span>ou</span>
+          </div>
+          <button
+            className="confirm-button upload-pdf-btn"
+            onClick={handleUploadClick}
+          >
+            📄 Enviar PDF para Simulado
+          </button>
+        </div>
+      ) : !selectedSubject ? (
+        <div className="card">
+          <h2>Matérias em {selectedCollege}:</h2>
+          {Object.keys(data[selectedCollege]).length === 0 ? (
+            <p style={{ margin: "20px 0", color: "#666" }}>Nenhuma matéria cadastrada no momento.</p>
+          ) : (
+            <div className="subject-selection">
+              {Object.keys(data[selectedCollege]).map((subject, index) => (
+                <button
+                  key={index}
+                  className="confirm-button subject-btn"
+                  onClick={() => handleSelectSubject(subject)}
+                >
+                  {subject} 📚
+                </button>
               ))}
             </div>
-            <button className="confirm-button restart-btn" onClick={() => window.location.reload()}>Refazer Sprint</button>
-          </div>
-        ) : (
-          <div className="quiz-section">
-            <p>Questão {currentQuestion + 1} de {questions.length}</p>
-            <p className="question-text">{questions[currentQuestion].question}</p>
-            <div className="options-container">
-              {questions[currentQuestion].options.map((option, index) => {
-                const isCorrect = index === questions[currentQuestion].answer;
-                const isSelected = index === selectedOption;
-                let btnClass = "option-button";
-                if (isSelected) btnClass += " active";
-                if (isConfirmed) {
-                  if (isCorrect) btnClass += " correct";
-                  if (isSelected && !isCorrect) btnClass += " wrong";
-                }
-                return (
-                  <button key={index} onClick={() => handleSelect(index)} className={btnClass} disabled={isConfirmed}>
-                    <span className="option-letter">{String.fromCharCode(65 + index)})</span>
-                    <span className="option-text">{option}</span>
-                  </button>
-                );
-              })}
+          )}
+          <button
+            className="confirm-button restart-btn"
+            onClick={() => handleSelectCollege(null)}
+          >
+            Voltar para Faculdades
+          </button>
+        </div>
+      ) : (
+        <div className="card">
+          <h2>
+            {selectedCollege} - {selectedSubject}
+          </h2>
+          {showScore ? (
+            <div className="score-section">
+              <h2>
+                Resultado: {score}/{questions.length}
+              </h2>
+              {isPdfQuiz && (
+                <p className="no-answer-note">
+                  ⚠️ Este simulado foi gerado a partir de um PDF sem gabarito.
+                  As respostas nao foram corrigidas automaticamente.
+                </p>
+              )}
+              <div className="analysis-box">
+                {userHistory.map((item, index) => {
+                  const isCorrect = item.hasAnswer ? item.isCorrect : null;
+                  let itemClass = "analysis-item";
+                  if (isCorrect === true) itemClass += " item-correct";
+                  else if (isCorrect === false) itemClass += " item-wrong";
+                  else itemClass += " item-unknown";
+                  return (
+                    <div key={index} className={itemClass}>
+                      <p>
+                        <strong>Q{index + 1}:</strong>{" "}
+                        {isCorrect === true ? "✅ " : isCorrect === false ? "❌ " : "❔ "}
+                        {item.question}
+                      </p>
+                      {item.hasAnswer === false && item.selectedText && (
+                        <p className="tip">
+                          📝 <strong>Sua resposta:</strong> {item.selectedText}
+                        </p>
+                      )}
+                      {isCorrect === false && (
+                        <p className="tip">
+                          ✅ <strong>Correta:</strong> {item.correctText}
+                        </p>
+                      )}
+                      {isCorrect === false && (
+                        <p className="tip">
+                          💡 <strong>Melhorar:</strong>{" "}
+                          {getImprovementTip(item.question)}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <button className="confirm-button restart-btn" onClick={handleRestart}>
+                Escolher Outra Matéria
+              </button>
             </div>
-            <button onClick={handleConfirm} className="confirm-button" disabled={selectedOption === null}>
-              {isConfirmed ? "Próxima Questão ➡️" : "Confirmar Resposta ✅"}
-            </button>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="quiz-section">
+              <p>
+                Questão {currentQuestion + 1} de {questions.length}
+              </p>
+              <p className="question-text">{questions[currentQuestion]?.question}</p>
+              <div className="options-container">
+                {questions[currentQuestion]?.options.map((option, index) => {
+                  const hasAnswer = questions[currentQuestion]?.answer >= 0;
+                  const isCorrect = hasAnswer && index === questions[currentQuestion]?.answer;
+                  const isSelected = index === selectedOption;
+                  let btnClass = "option-button";
+                  if (isSelected) btnClass += " active";
+                  if (isConfirmed && hasAnswer) {
+                    if (isCorrect) btnClass += " correct";
+                    if (isSelected && !isCorrect) btnClass += " wrong";
+                  }
+                  if (isConfirmed && !hasAnswer && isSelected) {
+                    btnClass += " confirmed-no-answer";
+                  }
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleSelect(index)}
+                      className={btnClass}
+                      disabled={isConfirmed}
+                    >
+                      <span className="option-letter">{String.fromCharCode(65 + index)})</span>
+                      <span className="option-text">{option}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={handleConfirm}
+                className="confirm-button"
+                disabled={selectedOption === null}
+              >
+                {isConfirmed ? "Próxima Questão ➡️" : "Confirmar Resposta ✅"}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
       <p className="footer">Desenvolvido por Erik Martins 🚀</p>
     </section>
-  )
+  );
 }
 
-export default App
+export default App;
