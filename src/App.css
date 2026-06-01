@@ -1,6 +1,6 @@
-/* Layout Base - Responsivo por padrão */
+/* Layout Base */
 body {
-  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
+  background: linear-gradient(135deg, #e0e5ec 0%, #c8d0df 100%);
   min-height: 100vh;
 }
 
@@ -10,6 +10,11 @@ body {
   text-align: center;
 }
 
+h2 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
 #quiz-container {
   display: flex;
   flex-direction: column;
@@ -17,7 +22,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   width: 100%;
-  max-width: 600px; /* Limita no desktop */
+  max-width: 640px;
   margin: 0 auto;
   padding: 1rem;
   box-sizing: border-box;
@@ -26,89 +31,97 @@ body {
 .title {
   font-size: 2.2rem;
   margin: 1rem 0;
+  color: #1a1a2e;
 }
 
-/* Card */
-.card {
-  width: 100%;
-  padding: 1.5rem;
-  background-color: #1a1a2e;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  box-sizing: border-box;
-}
-
-.question-text {
-  font-size: 1.1rem;
-  font-weight: bold;
-  line-height: 1.5;
-  min-height: 50px;
-  margin-bottom: 1.5rem;
-  color: #f0f0ff;
-  background: #222236;
-  padding: 16px;
-  border-radius: 10px;
-  border-left: 4px solid #61dafb;
-}
-
-/* Botões de Opção */
-.options-container {
+.subject-selection {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
 }
 
-.option-button {
+.subject-btn {
+  background: #f0f4ff !important;
+  color: #1a1a2e !important;
+  border: 2px solid #d0d8eb !important;
+  height: auto !important;
+  padding: 14px 18px !important;
+  margin-top: 0 !important;
+  text-align: left;
+  font-size: 0.95rem !important;
+}
+
+.subject-btn:hover {
+  background: #e0e8ff !important;
+  border-color: #4361ee !important;
+}
+
+/* Card */
+.card {
+  width: 100%;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  box-sizing: border-box;
+}
+
+.question-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 1.6;
+  min-height: 50px;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+  background: #f0f4ff;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border-left: 5px solid #4361ee;
+}
+
+/* Botoes de Opcao */
+.options-container {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 12px;
   width: 100%;
-  padding: 16px;
-  background-color: #2a2a3d;
-  border: 2px solid #4a4a6a;
-  border-radius: 10px;
+}
+
+.option-button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 18px;
+  background: #f8f9fc;
+  border: 2px solid #dde1ed;
+  border-radius: 12px;
   font-size: 0.95rem;
   text-align: left;
   transition: all 0.2s ease-out;
   cursor: pointer;
-  color: #e0e0f0;
+  color: #222;
 }
 
 .option-button:hover:not(:disabled) {
-  border-color: #7c9cff;
-  background-color: #32324f;
+  border-color: #4361ee;
+  background: #eef1ff;
 }
 
-/* Estado: Selecionado (Active) */
-.option-button.active {
-  border-color: #61dafb;
-  background-color: #1e3a5f;
-  color: #ffffff;
-  box-shadow: 0 0 8px rgba(97, 218, 251, 0.3);
-}
-
-/* Estado: Correto (Verde) */
-.option-button.correct {
-  background-color: #1b5e20 !important;
-  color: #ffffff !important;
-  border-color: #66bb6a !important;
-  box-shadow: 0 0 8px rgba(102, 187, 106, 0.4) !important;
-}
-
-/* Estado: Errado (Vermelho) */
-.option-button.wrong {
-  background-color: #b71c1c !important;
-  color: #ffffff !important;
-  border-color: #ef5350 !important;
-  box-shadow: 0 0 8px rgba(239, 83, 80, 0.4) !important;
-}
-
+/* Letra da opcao com fundo colorido */
 .option-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #4361ee;
+  color: #fff;
   font-weight: bold;
-  color: #90caf9;
-  min-width: 28px;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
+  flex-shrink: 0;
 }
 
 .option-text {
@@ -117,32 +130,83 @@ body {
   line-height: 1.5;
 }
 
+/* Estado: Selecionado */
+.option-button.active {
+  border-color: #4361ee;
+  background: #eef1ff;
+  box-shadow: 0 0 0 3px rgba(67,97,238,0.15);
+}
+
+.option-button.active .option-letter {
+  background: #4361ee;
+}
+
+/* Estado: Correto */
+.option-button.correct {
+  background: #e8f5e9 !important;
+  border-color: #43a047 !important;
+  box-shadow: 0 0 0 3px rgba(67,160,71,0.2) !important;
+}
+
+.option-button.correct .option-letter {
+  background: #43a047 !important;
+  color: #fff !important;
+}
+
+/* Estado: Errado */
+.option-button.wrong {
+  background: #fbe9e7 !important;
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229,57,53,0.2) !important;
+}
+
+.option-button.wrong .option-letter {
+  background: #e53935 !important;
+  color: #fff !important;
+}
+
+.option-button:disabled {
+  cursor: default;
+  opacity: 0.9;
+}
+
 .option-button.correct .option-letter,
 .option-button.wrong .option-letter {
   color: white;
 }
 
-/* Botão de Confirmar */
+/* Botao de Confirmar */
 .confirm-button {
   width: 100%;
   height: 50px;
   margin-top: 2rem;
-  background-color: #61dafb;
-  color: #1a1a1a;
+  background: #4361ee;
+  color: #fff;
   font-weight: bold;
   font-size: 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background: #3651d4;
 }
 
 .confirm-button:disabled {
-  background-color: #444;
-  color: #888;
+  background: #ccc;
+  color: #999;
   cursor: not-allowed;
 }
 
 .confirm-button.restart-btn {
-  background-color: #ff9800;
+  background: #ff6d00;
   color: white;
+}
+
+.confirm-button.restart-btn:hover {
+  background: #e65100;
 }
 
 /* Footer */
@@ -150,7 +214,7 @@ body {
   margin-top: auto;
   padding: 1rem 0;
   font-size: 0.85rem;
-  color: #888;
+  color: #777;
 }
 
 /* Upload Zone */
@@ -158,16 +222,18 @@ body {
   width: 100%;
   margin: 1rem 0;
   padding: 2rem 1rem;
-  border: 2px dashed #555;
+  border: 2px dashed #b0b8c9;
   border-radius: 12px;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
   box-sizing: border-box;
+  background: #f8f9fc;
 }
 
 .upload-zone:hover {
-  border-color: #61dafb;
+  border-color: #4361ee;
+  background: #eef1ff;
 }
 
 .file-input {
@@ -177,17 +243,17 @@ body {
 .file-label {
   display: block;
   font-size: 1rem;
-  color: #9ca3af;
+  color: #555;
   cursor: pointer;
   padding: 1rem;
 }
 
 .file-label:hover {
-  color: #61dafb;
+  color: #4361ee;
 }
 
 .upload-hint {
-  color: #9ca3af;
+  color: #777;
   margin: 0.5rem 0 1rem;
   line-height: 1.5;
 }
@@ -195,25 +261,25 @@ body {
 .parsing-status {
   margin: 1rem 0;
   padding: 1rem;
-  background: #1a1a1a;
+  background: #eef1ff;
   border-radius: 8px;
-  border: 1px solid #61dafb;
+  border: 1px solid #4361ee;
 }
 
 .parsing-status p {
-  color: #61dafb;
+  color: #4361ee;
 }
 
 .error-box {
   margin: 1rem 0;
   padding: 1rem;
-  background: #2d1b1b;
+  background: #fbe9e7;
   border-radius: 8px;
-  border: 1px solid #f44336;
+  border: 1px solid #e53935;
 }
 
 .error-box p {
-  color: #ef9a9a;
+  color: #c62828;
   line-height: 1.5;
   white-space: pre-wrap;
   text-align: left;
@@ -231,7 +297,7 @@ body {
   content: '';
   flex: 1;
   height: 1px;
-  background: #444;
+  background: #d0d5e0;
 }
 
 .upload-divider span {
@@ -240,25 +306,25 @@ body {
 }
 
 .upload-pdf-btn {
-  background-color: #7c4dff !important;
+  background: #7c4dff !important;
   color: white !important;
 }
 
 .upload-pdf-btn:hover:not(:disabled) {
-  background-color: #651fff !important;
+  background: #651fff !important;
 }
 
 .confirmed-no-answer {
-  border-color: #61dafb !important;
-  background-color: #2a2a4a !important;
+  border-color: #4361ee !important;
+  background: #eef1ff !important;
 }
 
 .no-answer-note {
   margin: 1rem 0;
   padding: 0.75rem;
-  background: #2d2d1b;
+  background: #fff8e1;
   border-radius: 8px;
-  color: #ffd54f;
+  color: #e65100;
   font-size: 0.9rem;
   line-height: 1.4;
 }
@@ -271,25 +337,25 @@ body {
 }
 
 .item-correct {
-  background: #1b2d1b;
+  background: #e8f5e9;
   border-left: 4px solid #4caf50;
 }
 
 .item-wrong {
-  background: #2d1b1b;
-  border-left: 4px solid #f44336;
+  background: #fbe9e7;
+  border-left: 4px solid #e53935;
 }
 
 .item-unknown {
-  background: #2a2a2a;
-  border-left: 4px solid #888;
+  background: #f5f5f5;
+  border-left: 4px solid #9e9e9e;
 }
 
 /* Score */
 .score-percentage {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #61dafb;
+  color: #4361ee;
   margin: 0.5rem 0;
 }
 
@@ -302,13 +368,13 @@ body {
 }
 
 .chart-bar-correct {
-  background: #4caf50;
+  background: #43a047;
   transition: width 0.6s ease;
   min-width: 4px;
 }
 
 .chart-bar-wrong {
-  background: #f44336;
+  background: #e53935;
   transition: width 0.6s ease;
   min-width: 4px;
 }
@@ -320,20 +386,21 @@ body {
   margin-bottom: 1rem;
 }
 
-.chart-label-correct { color: #4caf50; }
-.chart-label-wrong { color: #f44336; }
+.chart-label-correct { color: #43a047; }
+.chart-label-wrong { color: #e53935; }
 
 .topic-section {
   margin: 1rem 0;
   padding: 1rem;
-  background: #1a1a1a;
+  background: #f8f9fc;
   border-radius: 8px;
+  border: 1px solid #e0e5ec;
 }
 
 .topic-section h3 {
   margin: 0 0 0.75rem;
   font-size: 1rem;
-  color: #f3f4f6;
+  color: #1a1a2e;
 }
 
 .topic-grid {
@@ -351,14 +418,15 @@ body {
 .topic-name {
   min-width: 130px;
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: #555;
   text-align: right;
+  font-weight: 500;
 }
 
 .topic-bar {
   flex: 1;
   height: 20px;
-  background: #333;
+  background: #e0e5ec;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -373,35 +441,37 @@ body {
 .topic-stats {
   min-width: 40px;
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: #555;
   text-align: left;
+  font-weight: 600;
 }
 
 .attempts-section {
   margin: 1rem 0;
   padding: 1rem;
-  background: #1a1a1a;
+  background: #f8f9fc;
   border-radius: 8px;
+  border: 1px solid #e0e5ec;
 }
 
 .attempts-section h3 {
   margin: 0 0 0.75rem;
   font-size: 1rem;
-  color: #f3f4f6;
+  color: #1a1a2e;
 }
 
 .attempt-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 0;
-  border-bottom: 1px solid #2a2a2a;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e5ec;
   font-size: 0.85rem;
 }
 
 .attempt-item:last-child { border-bottom: none; }
 
-.attempt-date { color: #888; min-width: 140px; }
+.attempt-date { color: #777; min-width: 140px; }
 
 .attempt-score {
   font-weight: bold;
@@ -409,27 +479,27 @@ body {
   text-align: center;
 }
 
-.attempt-good { color: #4caf50; }
-.attempt-bad { color: #f44336; }
+.attempt-good { color: #43a047; }
+.attempt-bad { color: #e53935; }
 
 .attempt-bar-wrapper {
   flex: 1;
   height: 12px;
-  background: #333;
+  background: #e0e5ec;
   border-radius: 6px;
   overflow: hidden;
 }
 
 .attempt-bar-fill {
   height: 100%;
-  background: #61dafb;
+  background: #4361ee;
   border-radius: 6px;
   transition: width 0.5s ease;
   min-width: 4px;
 }
 
 .no-attempts {
-  color: #666;
+  color: #999;
   font-size: 0.85rem;
   text-align: center;
   padding: 0.5rem;
@@ -456,34 +526,28 @@ body {
   }
   
   .option-button {
-    padding: 14px;
+    padding: 12px 14px;
     font-size: 0.9rem;
   }
 }
 
-/* 1. Garante que as imagens (logos) não quebrem no mobile */
+/* Images */
 .hero img {
   max-width: 100%;
   height: auto;
 }
 
-/* 2. Melhora a rolagem da análise no celular */
+/* Analysis box (scroll) */
 .analysis-box {
-  max-height: 50vh; /* Usa metade da altura da tela do celular */
+  max-height: 50vh;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Deixa o scroll suave no iPhone/iOS */
+  -webkit-overflow-scrolling: touch;
   margin: 15px 0;
   padding: 10px;
-  background: #111;
   border-radius: 8px;
 }
 
-/* 3. Ajuste de margem para o texto não colar na borda */
-.option-text {
-  word-break: break-word; /* Evita que palavras gigantes quebrem o layout */
-}
-
-/* 4. Feedback visual de clique no mobile */
+/* Active click feedback */
 .option-button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
