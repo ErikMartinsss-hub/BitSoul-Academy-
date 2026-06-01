@@ -262,6 +262,162 @@
   border-left: 4px solid #888;
 }
 
+/* Score */
+.score-percentage {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #61dafb;
+  margin: 0.5rem 0;
+}
+
+.chart-bar {
+  display: flex;
+  height: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.chart-bar-correct {
+  background: #4caf50;
+  transition: width 0.6s ease;
+  min-width: 4px;
+}
+
+.chart-bar-wrong {
+  background: #f44336;
+  transition: width 0.6s ease;
+  min-width: 4px;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.chart-label-correct { color: #4caf50; }
+.chart-label-wrong { color: #f44336; }
+
+.topic-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+}
+
+.topic-section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #f3f4f6;
+}
+
+.topic-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.topic-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topic-name {
+  min-width: 130px;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: right;
+}
+
+.topic-bar {
+  flex: 1;
+  height: 20px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.topic-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  min-width: 4px;
+}
+
+.topic-stats {
+  min-width: 40px;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: left;
+}
+
+.attempts-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+}
+
+.attempts-section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #f3f4f6;
+}
+
+.attempt-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #2a2a2a;
+  font-size: 0.85rem;
+}
+
+.attempt-item:last-child { border-bottom: none; }
+
+.attempt-date { color: #888; min-width: 140px; }
+
+.attempt-score {
+  font-weight: bold;
+  min-width: 50px;
+  text-align: center;
+}
+
+.attempt-good { color: #4caf50; }
+.attempt-bad { color: #f44336; }
+
+.attempt-bar-wrapper {
+  flex: 1;
+  height: 12px;
+  background: #333;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.attempt-bar-fill {
+  height: 100%;
+  background: #61dafb;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  min-width: 4px;
+}
+
+.no-attempts {
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.result-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* Media Queries para Mobile */
 @media (max-width: 480px) {
   .title {

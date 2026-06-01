@@ -42,6 +42,33 @@ function App() {
   const [pdfError, setPdfError] = useState('');
   const [pdfFileName, setPdfFileName] = useState('');
   const [isPdfQuiz, setIsPdfQuiz] = useState(false);
+  const [attempts, setAttempts] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  const topicMap = {
+    "Desenvolvimento Front End": [
+      { min: 0, max: 0, topic: "Angular" },
+      { min: 1, max: 1, topic: "Angular" },
+      { min: 2, max: 2, topic: "RxJS" },
+      { min: 3, max: 3, topic: "RxJS" },
+      { min: 4, max: 4, topic: "Banco de Dados" },
+      { min: 5, max: 5, topic: "Angular Material" },
+      { min: 6, max: 6, topic: "TypeScript" },
+      { min: 7, max: 7, topic: "TypeScript" },
+      { min: 8, max: 8, topic: "TypeScript" },
+      { min: 9, max: 9, topic: "TypeScript" },
+      { min: 10, max: 10, topic: "TypeScript" },
+      { min: 11, max: 11, topic: "TypeScript" },
+      { min: 12, max: 12, topic: "TypeScript" }
+    ]
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("attempts");
+    if (saved) {
+      try { setAttempts(JSON.parse(saved)); } catch {}
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -171,6 +198,16 @@ function App() {
         setCurrentQuestion(nextQuestion);
       } else {
         setShowScore(true);
+        const attempt = {
+          date: new Date().toLocaleString("pt-BR"),
+          score: score,
+          total: questions.length,
+          subject: selectedSubject || "Simulado",
+          history: userHistory
+        };
+        const updated = [attempt, ...attempts].slice(0, 20);
+        setAttempts(updated);
+        localStorage.setItem("attempts", JSON.stringify(updated));
       }
     }
   };
@@ -237,6 +274,27 @@ function App() {
     setPdfError('');
     setPdfFileName('');
     setIsPdfQuiz(false);
+    setShowHistory(false);
+  };
+
+  const getQuestionTopic = (qIndex) => {
+    if (!selectedSubject) return "";
+    const mapping = topicMap[selectedSubject];
+    if (!mapping) return "";
+    const entry = mapping.find(m => qIndex >= m.min && qIndex <= m.max);
+    return entry ? entry.topic : "";
+  };
+
+  const getTopicPerformance = () => {
+    const topics = {};
+    userHistory.forEach((item, idx) => {
+      const topic = getQuestionTopic(idx);
+      if (!topic) return;
+      if (!topics[topic]) topics[topic] = { correct: 0, total: 0 };
+      topics[topic].total++;
+      if (item.isCorrect) topics[topic].correct++;
+    });
+    return topics;
   };
 
   return (
@@ -358,15 +416,85 @@ function App() {
               <h2>
                 Resultado: {score}/{questions.length}
               </h2>
+              <div className="score-percentage">
+                {Math.round((score / questions.length) * 100)}%
+              </div>
+              <div className="chart-bar">
+                <div
+                  className="chart-bar-correct"
+                  style={{ width: `${(score / questions.length) * 100}%` }}
+                />
+                <div
+                  className="chart-bar-wrong"
+                  style={{ width: `${((questions.length - score) / questions.length) * 100}%` }}
+                />
+              </div>
+              <div className="chart-labels">
+                <span className="chart-label-correct">{score} corretas</span>
+                <span className="chart-label-wrong">{questions.length - score} erradas</span>
+              </div>
+
               {isPdfQuiz && (
                 <p className="no-answer-note">
-                  ⚠️ Este simulado foi gerado a partir de um PDF sem gabarito.
+                  Este simulado foi gerado a partir de um PDF sem gabarito.
                   As respostas nao foram corrigidas automaticamente.
                 </p>
               )}
+
+              {!isPdfQuiz && (
+                <div className="topic-section">
+                  <h3>Desempenho por topico</h3>
+                  <div className="topic-grid">
+                    {Object.entries(getTopicPerformance()).map(([topic, data]) => (
+                      <div key={topic} className="topic-item">
+                        <div className="topic-name">{topic}</div>
+                        <div className="topic-bar">
+                          <div
+                            className="topic-bar-fill"
+                            style={{
+                              width: `${(data.correct / data.total) * 100}%`,
+                              background: data.correct === data.total
+                                ? "#4caf50"
+                                : data.correct >= data.total / 2
+                                  ? "#ff9800"
+                                  : "#f44336"
+                            }}
+                          />
+                        </div>
+                        <div className="topic-stats">
+                          {data.correct}/{data.total}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="attempts-section">
+                <h3>Tentativas anteriores</h3>
+                {attempts.filter(a => a.subject === (selectedSubject || "Simulado")).map((att, i) => (
+                  <div key={i} className="attempt-item">
+                    <span className="attempt-date">{att.date}</span>
+                    <span className={`attempt-score ${att.score >= att.total / 2 ? "attempt-good" : "attempt-bad"}`}>
+                      {att.score}/{att.total}
+                    </span>
+                    <div className="attempt-bar-wrapper">
+                      <div
+                        className="attempt-bar-fill"
+                        style={{ width: `${(att.score / att.total) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                {attempts.filter(a => a.subject === (selectedSubject || "Simulado")).length === 0 && (
+                  <p className="no-attempts">Nenhuma tentativa anterior.</p>
+                )}
+              </div>
+
               <div className="analysis-box">
                 {userHistory.map((item, index) => {
                   const isCorrect = item.hasAnswer ? item.isCorrect : null;
+                  const topic = getQuestionTopic(index);
                   let itemClass = "analysis-item";
                   if (isCorrect === true) itemClass += " item-correct";
                   else if (isCorrect === false) itemClass += " item-wrong";
@@ -375,32 +503,29 @@ function App() {
                     <div key={index} className={itemClass}>
                       <p>
                         <strong>Q{index + 1}:</strong>{" "}
-                        {isCorrect === true ? "✅ " : isCorrect === false ? "❌ " : "❔ "}
+                        {isCorrect === true ? "Correto" : isCorrect === false ? "Errado" : "?"}{" "}
                         {item.question}
                       </p>
+                      {topic && <p className="tip">Topico: {topic}</p>}
                       {item.hasAnswer === false && item.selectedText && (
                         <p className="tip">
-                          📝 <strong>Sua resposta:</strong> {item.selectedText}
+                          Sua resposta: {item.selectedText}
                         </p>
                       )}
                       {isCorrect === false && (
                         <p className="tip">
-                          ✅ <strong>Correta:</strong> {item.correctText}
-                        </p>
-                      )}
-                      {isCorrect === false && (
-                        <p className="tip">
-                          💡 <strong>Melhorar:</strong>{" "}
-                          {getImprovementTip(item.question)}
+                          Correta: {item.correctText}
                         </p>
                       )}
                     </div>
                   );
                 })}
               </div>
-              <button className="confirm-button restart-btn" onClick={handleRestart}>
-                Escolher Outra Matéria
-              </button>
+              <div className="result-buttons">
+                <button className="confirm-button restart-btn" onClick={handleRestart}>
+                  Escolher Outra Materia
+                </button>
+              </div>
             </div>
           ) : (
             <div className="quiz-section">
