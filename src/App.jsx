@@ -72,6 +72,18 @@ function App() {
       { min: 7, max: 7, topic: "Rotas" },
       { min: 8, max: 8, topic: "RouterModule" },
       { min: 9, max: 9, topic: "DAO" }
+    ],
+    "TypeScript": [
+      { min: 0, max: 0, topic: "Construtores" },
+      { min: 1, max: 1, topic: "Recursao" },
+      { min: 2, max: 2, topic: "Tipos Uniao" },
+      { min: 3, max: 3, topic: "Narrowing" },
+      { min: 4, max: 4, topic: "Arrow Functions" },
+      { min: 5, max: 5, topic: "Tipos de Retorno" },
+      { min: 6, max: 6, topic: "Concatenacao" },
+      { min: 7, max: 7, topic: "Parametros" },
+      { min: 8, max: 8, topic: "Metodos Array" },
+      { min: 9, max: 9, topic: "Narrowing" }
     ]
   };
 

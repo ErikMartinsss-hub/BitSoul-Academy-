@@ -295,7 +295,99 @@ const questoesAngular = [
   }
 ];
 
+const questoesTypeScript = [
+  {
+    id: 1,
+    enunciado: "Qual o objetivo da funcao construtora de uma classe do TypeScript?",
+    alternativas: [
+      "Garantir que o programa seja orientado a objetos.",
+      "Garantir que o programa esta sintaticamente correto.",
+      "Identificar a oportunidade de reusabilidade do codigo.",
+      "Estabelecer o comportamento inicial do objeto.",
+      "Todo programa em TypeScript e orientado a objetos e deve ter o construtor explicitamente implementado."
+    ],
+    resposta_correta: 3
+  },
+  {
+    id: 2,
+    enunciado: 'Considere: function w(n: number): number { if(n==0){ return 0; } if(n==1){ return 1; } return n+w(n-1); } console.log(w(5)); Qual o resultado?',
+    alternativas: ["0", "1", "10", "15", "120"],
+    resposta_correta: 3
+  },
+  {
+    id: 3,
+    enunciado: 'Considere: class P { public exibir_informacao(a: number|string):void { console.log("resultado"); } } const obj1 = new P(); obj1.exibir_informacao(10); Qual o resultado?',
+    alternativas: [
+      'vai exibir a frase: "resultado"',
+      "vai exibir o numero 10",
+      'vai exibir "vazio"',
+      "O codigo esta sintaticamente incorreto",
+      'vai exibir a mensagem: "number|string"'
+    ],
+    resposta_correta: 0
+  },
+  {
+    id: 4,
+    enunciado: 'Considere: function t(a: number|string):number { let r:number= (typeof a === "number" ? 1 : 2); return r**(r+r); } console.log(t("Teste")); Qual o resultado?',
+    alternativas: ["1", "2", "Teste", "8", "16"],
+    resposta_correta: 4
+  },
+  {
+    id: 5,
+    enunciado: "Considere: let s = (x: number, y: number):number => x+y; console.log(s(s(1,2),s(3,4))); Qual o resultado?",
+    alternativas: ["1", "2", "3", "7", "10"],
+    resposta_correta: 4
+  },
+  {
+    id: 6,
+    enunciado: 'Considere: function exibir(a: number|string|undefined): string { return a; } exibir(); Selecione a opcao correta sobre o codigo:',
+    alternativas: [
+      "numero",
+      "string",
+      "nao e um tipo definido",
+      'no tipo de retorno da funcao e necessario incluir "string"',
+      'no tipo de retorno da funcao e necessario incluir "undefined"'
+    ],
+    resposta_correta: 4
+  },
+  {
+    id: 7,
+    enunciado: 'Considere: function f1(msg: string, num: number): number { return msg+num; } let tnum: number = 10; let tmsg: string = "10"; console.log(f1(tmsg, tnum)); Qual o resultado?',
+    alternativas: ['"1010"', "10", "20", '"10"', '"20"'],
+    resposta_correta: 0
+  },
+  {
+    id: 8,
+    enunciado: "Considere: function f2(x: number, y: number): number { return x+=y; } let x:number = f2(10, 20); console.log(x); Qual o resultado?",
+    alternativas: ["0", "10", "20", "30", "erro de execucao"],
+    resposta_correta: 3
+  },
+  {
+    id: 9,
+    enunciado: "Considere: let vetor:number[] = [1, 5, 9, 10, 15]; const e:number = vetor.indexOf(5); console.log(e); Qual o resultado?",
+    alternativas: ["0", "1", "5", "15", "Erro de execucao"],
+    resposta_correta: 1
+  },
+  {
+    id: 10,
+    enunciado: 'Considere: function y(a: number|string):string { return (typeof a === "number" ? "numero" : "string"); } console.log(y("Teste")); Qual o resultado?',
+    alternativas: ["number", "numero", "string", "Teste", "a"],
+    resposta_correta: 2
+  }
+];
+
 async function popularBanco() {
+  const docsToDelete = ["bkI491K2QrubSLWJVMTa", "UnrzFgBt7G0DcwQG1zXe"];
+
+  for (const id of docsToDelete) {
+    try {
+      await deleteDoc(doc(db, "AVALIACOES", id));
+      console.log("Removido documento:", id);
+    } catch (error) {
+      console.log("Aviso: nao foi possivel remover", id, error.message);
+    }
+  }
+
   // 1) Desenvolvimento Front End (13 questoes)
   const dadosFE = {
     instituicao: "Analise e Desenvolvimento de Sistemas (Estacio)",
@@ -303,14 +395,6 @@ async function popularBanco() {
     data_criacao: new Date().toISOString(),
     questoes: questoesFrontEnd
   };
-
-  console.log("Removendo documento antigo (id: jhz8UfdenMDMA0AmstJW)...");
-  try {
-    await deleteDoc(doc(db, "AVALIACOES", "jhz8UfdenMDMA0AmstJW"));
-    console.log("Documento antigo removido.");
-  } catch (error) {
-    console.log("Aviso: nao foi possivel remover:", error.message);
-  }
 
   console.log("Inserindo " + questoesFrontEnd.length + " questoes em Desenvolvimento Front End...");
   try {
@@ -334,6 +418,22 @@ async function popularBanco() {
     console.log("Angular inserido. ID:", docRef.id);
   } catch (error) {
     console.error("Erro Angular:", error);
+  }
+
+  // 3) TypeScript (10 questoes)
+  const dadosTS = {
+    instituicao: "Analise e Desenvolvimento de Sistemas (Estacio)",
+    disciplina: "TypeScript",
+    data_criacao: new Date().toISOString(),
+    questoes: questoesTypeScript
+  };
+
+  console.log("Inserindo " + questoesTypeScript.length + " questoes em TypeScript...");
+  try {
+    const docRef = await addDoc(collection(db, "AVALIACOES"), dadosTS);
+    console.log("TS inserido. ID:", docRef.id);
+  } catch (error) {
+    console.error("Erro TS:", error);
   }
 }
 
