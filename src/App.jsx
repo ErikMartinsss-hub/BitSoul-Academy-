@@ -271,22 +271,26 @@ function App() {
     }
   };
 
-  const handleRestart = () => {
-    setSelectedCollege(null);
-    setSelectedSubject(null);
-    setQuestions([]);
+  const handleRetry = () => {
     setCurrentQuestion(0);
     setSelectedOption(null);
     setIsConfirmed(false);
     setScore(0);
     setShowScore(false);
     setUserHistory([]);
+    setShowHistory(false);
+  };
+
+  const handleRestart = () => {
+    handleRetry();
+    setSelectedCollege(null);
+    setSelectedSubject(null);
+    setQuestions([]);
     setShowUpload(false);
     setPdfParsing(false);
     setPdfError('');
     setPdfFileName('');
     setIsPdfQuiz(false);
-    setShowHistory(false);
   };
 
   const getQuestionTopic = (qIndex) => {
@@ -534,6 +538,9 @@ function App() {
                 })}
               </div>
               <div className="result-buttons">
+                <button className="confirm-button" onClick={handleRetry}>
+                  Fazer Novamente
+                </button>
                 <button className="confirm-button restart-btn" onClick={handleRestart}>
                   Escolher Outra Materia
                 </button>
