@@ -169,9 +169,12 @@ const questoesFrontEnd = [
       "Usar o simbolo $ antes da variavel para indicar que ela pode assumir tipos distintos."
     ],
     resposta_correta: 2
-  },
+  }
+];
+
+const questoesAngular = [
   {
-    id: 14,
+    id: 1,
     enunciado: "Qual dos atributos de NgModule define o componente principal de um modulo do Angular?",
     alternativas: [
       "imports",
@@ -183,7 +186,7 @@ const questoesFrontEnd = [
     resposta_correta: 3
   },
   {
-    id: 15,
+    id: 2,
     enunciado: "Considerando um servico no estilo REST com NodeJS e Express, qual a assinatura do metodo para responder a chamada http://localhost:3000/alunos/29891, retornando os dados do aluno no formato JSON?",
     alternativas: [
       "router.get('/alunos', async (req, res) => { });",
@@ -195,7 +198,7 @@ const questoesFrontEnd = [
     resposta_correta: 2
   },
   {
-    id: 16,
+    id: 3,
     enunciado: "No Angular, o arquivo polyfills.ts tem como objetivo:",
     alternativas: [
       "Definir o conteudo da pagina inicial do aplicativo.",
@@ -207,7 +210,7 @@ const questoesFrontEnd = [
     resposta_correta: 4
   },
   {
-    id: 17,
+    id: 4,
     enunciado: "No Angular com formularios reativos, para um campo do tipo checkbox que o usuario deve marcar para aceitar as regras do site, qual validador e o correto?",
     alternativas: [
       "Validators.required",
@@ -219,7 +222,7 @@ const questoesFrontEnd = [
     resposta_correta: 4
   },
   {
-    id: 18,
+    id: 5,
     enunciado: 'No RxJS, considere: const observable = interval(1000).pipe(map((x:number)=>x*x)).pipe(observeOn(asyncScheduler)); Para que serve o metodo pipe?',
     alternativas: [
       "Gerar numeros sequencialmente.",
@@ -231,7 +234,7 @@ const questoesFrontEnd = [
     resposta_correta: 4
   },
   {
-    id: 19,
+    id: 6,
     enunciado: "No MongoDB com NodeJS, qual metodo permite a inclusao de um documento em uma colecao?",
     alternativas: [
       "insertOne",
@@ -243,7 +246,7 @@ const questoesFrontEnd = [
     resposta_correta: 0
   },
   {
-    id: 20,
+    id: 7,
     enunciado: 'Observe o CSS: .container{ display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; overflow-y: scroll; height: 230px; } Qual informacao e verdadeira sobre essa formatacao?',
     alternativas: [
       "Exibe barra de rolagem horizontal quando o conteudo excede a largura.",
@@ -255,7 +258,7 @@ const questoesFrontEnd = [
     resposta_correta: 3
   },
   {
-    id: 21,
+    id: 8,
     enunciado: "No Angular, qual interface deve ser implementada por um servico para controlar acesso a uma rota?",
     alternativas: [
       "SignIn",
@@ -267,7 +270,7 @@ const questoesFrontEnd = [
     resposta_correta: 1
   },
   {
-    id: 22,
+    id: 9,
     enunciado: "No Angular, qual modulo gerencia a troca de conteudo com base em rotas dentro de uma SPA?",
     alternativas: [
       "BrowserModule",
@@ -279,7 +282,7 @@ const questoesFrontEnd = [
     resposta_correta: 2
   },
   {
-    id: 23,
+    id: 10,
     enunciado: "Qual padrao de projeto deve ser usado para centralizar a persistencia e reduzir custos de manutencao com SQL espalhado pelo codigo?",
     alternativas: [
       "Observer",
@@ -293,27 +296,44 @@ const questoesFrontEnd = [
 ];
 
 async function popularBanco() {
-  const dados = {
+  // 1) Desenvolvimento Front End (13 questoes)
+  const dadosFE = {
     instituicao: "Analise e Desenvolvimento de Sistemas (Estacio)",
     disciplina: "Desenvolvimento Front End",
     data_criacao: new Date().toISOString(),
     questoes: questoesFrontEnd
   };
 
-  console.log("Removendo documento antigo (id: imvUN4rbW9ca1ACQmiKf)...");
+  console.log("Removendo documento antigo (id: jhz8UfdenMDMA0AmstJW)...");
   try {
-    await deleteDoc(doc(db, "AVALIACOES", "imvUN4rbW9ca1ACQmiKf"));
+    await deleteDoc(doc(db, "AVALIACOES", "jhz8UfdenMDMA0AmstJW"));
     console.log("Documento antigo removido.");
   } catch (error) {
-    console.log("Aviso: nao foi possivel remover documento antigo:", error.message);
+    console.log("Aviso: nao foi possivel remover:", error.message);
   }
 
-  console.log("Inserindo " + questoesFrontEnd.length + " questoes de Desenvolvimento Front End...");
+  console.log("Inserindo " + questoesFrontEnd.length + " questoes em Desenvolvimento Front End...");
   try {
-    const docRef = await addDoc(collection(db, "AVALIACOES"), dados);
-    console.log("Sucesso! Novo documento criado com ID:", docRef.id);
+    const docRef = await addDoc(collection(db, "AVALIACOES"), dadosFE);
+    console.log("FE inserido. ID:", docRef.id);
   } catch (error) {
-    console.error("Erro ao inserir documento:", error);
+    console.error("Erro FE:", error);
+  }
+
+  // 2) Angular (10 questoes)
+  const dadosAngular = {
+    instituicao: "Analise e Desenvolvimento de Sistemas (Estacio)",
+    disciplina: "Angular",
+    data_criacao: new Date().toISOString(),
+    questoes: questoesAngular
+  };
+
+  console.log("Inserindo " + questoesAngular.length + " questoes em Angular...");
+  try {
+    const docRef = await addDoc(collection(db, "AVALIACOES"), dadosAngular);
+    console.log("Angular inserido. ID:", docRef.id);
+  } catch (error) {
+    console.error("Erro Angular:", error);
   }
 }
 
