@@ -59,7 +59,17 @@ function App() {
       { min: 9, max: 9, topic: "TypeScript" },
       { min: 10, max: 10, topic: "TypeScript" },
       { min: 11, max: 11, topic: "TypeScript" },
-      { min: 12, max: 12, topic: "TypeScript" }
+      { min: 12, max: 12, topic: "TypeScript" },
+      { min: 13, max: 13, topic: "Angular" },
+      { min: 14, max: 14, topic: "Node.js" },
+      { min: 15, max: 15, topic: "Angular" },
+      { min: 16, max: 16, topic: "Angular" },
+      { min: 17, max: 17, topic: "RxJS" },
+      { min: 18, max: 18, topic: "Banco de Dados" },
+      { min: 19, max: 19, topic: "CSS" },
+      { min: 20, max: 20, topic: "Angular" },
+      { min: 21, max: 21, topic: "Angular" },
+      { min: 22, max: 22, topic: "Padroes de Projeto" }
     ]
   };
 
