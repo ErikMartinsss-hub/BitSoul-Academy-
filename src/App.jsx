@@ -305,6 +305,11 @@ function App() {
     setIsPdfQuiz(false);
   };
 
+  const hasCode = (text) => {
+    if (!text) return false;
+    return /function\s*\w*\s*\(|=>|console\.log|class\s+\w+|:\s*(number|string|void|any)\b|let\s+\w+\s*:|const\s+\w+\s*:|return\s+\w+|indexOf\(|typeof\s+\w+|\.pipe\(/.test(text);
+  };
+
   const getQuestionTopic = (qIndex) => {
     if (!selectedSubject) return "";
     const mapping = topicMap[selectedSubject];
@@ -563,7 +568,7 @@ function App() {
               <p>
                 Questão {currentQuestion + 1} de {questions.length}
               </p>
-              <p className="question-text">{questions[currentQuestion]?.question}</p>
+              <p className={`question-text${hasCode(questions[currentQuestion]?.question) ? " code-question" : ""}`}>{questions[currentQuestion]?.question}</p>
               <div className="options-container">
                 {questions[currentQuestion]?.options.map((option, index) => {
                   const hasAnswer = questions[currentQuestion]?.answer >= 0;
