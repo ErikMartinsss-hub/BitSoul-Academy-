@@ -406,9 +406,9 @@ const questoesTypeScript = [
   },
   {
     id: 14,
-    enunciado: "Considere o trecho de codigo que calcula o resultado entre dois numeros. Qual o resultado da execucao?",
+    enunciado: 'Considere: function t2(a: boolean|number):number { let r:number = (typeof a === "number" ? 11 : 20); r = (r%10)+1; return r*(r+r); } console.log(t2(50)); Qual o resultado?',
     alternativas: ["8", "10", "20", "30", "50"],
-    resposta_correta: 3
+    resposta_correta: 0
   }
 ];
 
