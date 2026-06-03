@@ -373,11 +373,47 @@ const questoesTypeScript = [
     enunciado: 'Considere: function y(a: number|string):string { return (typeof a === "number" ? "numero" : "string"); } console.log(y("Teste")); Qual o resultado?',
     alternativas: ["number", "numero", "string", "Teste", "a"],
     resposta_correta: 2
+  },
+  {
+    id: 11,
+    enunciado: "Considere: let valor: number = (22%10)+1; console.log(valor); Qual o resultado?",
+    alternativas: ["0", "1", "3", "33", "221"],
+    resposta_correta: 2
+  },
+  {
+    id: 12,
+    enunciado: "Considere o trecho de codigo com funcao que recebe number|string|undefined e retorna string. Selecione a opcao correta sobre o codigo:",
+    alternativas: [
+      "numero",
+      "string",
+      "nao e um tipo definido",
+      'no tipo de retorno da funcao e necessario incluir "string"',
+      'no tipo de retorno da funcao e necessario incluir "undefined"'
+    ],
+    resposta_correta: 4
+  },
+  {
+    id: 13,
+    enunciado: "Considere: class Teste extends R { public imprimir = () => { console.log('imprimir teste'); } } Selecione a opcao correta:",
+    alternativas: [
+      "R e a superclasse de Teste",
+      "R herda as caracteristicas da classe Teste",
+      "Nao e possivel fazer nenhuma afirmacao sobre o codigo",
+      "A classe R possui um metodo chamado imprimir",
+      "A classe Teste e privada"
+    ],
+    resposta_correta: 0
+  },
+  {
+    id: 14,
+    enunciado: "Considere o trecho de codigo que calcula o resultado entre dois numeros. Qual o resultado da execucao?",
+    alternativas: ["8", "10", "20", "30", "50"],
+    resposta_correta: 3
   }
 ];
 
 async function popularBanco() {
-  const docsToDelete = ["bkI491K2QrubSLWJVMTa", "UnrzFgBt7G0DcwQG1zXe"];
+  const docsToDelete = ["mDqK4dWWZfFCOz4gHbiT", "qoMazjwQ667vOfUHYSRB", "SUbXIpjjjxGbbaI4zzt1"];
 
   for (const id of docsToDelete) {
     try {

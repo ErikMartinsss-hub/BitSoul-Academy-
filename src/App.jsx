@@ -83,7 +83,11 @@ function App() {
       { min: 6, max: 6, topic: "Concatenacao" },
       { min: 7, max: 7, topic: "Parametros" },
       { min: 8, max: 8, topic: "Metodos Array" },
-      { min: 9, max: 9, topic: "Narrowing" }
+      { min: 9, max: 9, topic: "Narrowing" },
+      { min: 10, max: 10, topic: "Operadores" },
+      { min: 11, max: 11, topic: "Tipos de Retorno" },
+      { min: 12, max: 12, topic: "Heranca" },
+      { min: 13, max: 13, topic: "Operacoes" }
     ]
   };
 
