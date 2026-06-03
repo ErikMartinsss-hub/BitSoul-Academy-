@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAF4qRhibrwKQECeQgAidVfVEVuW9u1LnA",
@@ -413,15 +413,12 @@ const questoesTypeScript = [
 ];
 
 async function popularBanco() {
-  const docsToDelete = ["mDqK4dWWZfFCOz4gHbiT", "qoMazjwQ667vOfUHYSRB", "SUbXIpjjjxGbbaI4zzt1"];
-
-  for (const id of docsToDelete) {
-    try {
-      await deleteDoc(doc(db, "AVALIACOES", id));
-      console.log("Removido documento:", id);
-    } catch (error) {
-      console.log("Aviso: nao foi possivel remover", id, error.message);
-    }
+  // Remove todos os documentos existentes da instituicao
+  const q = query(collection(db, "AVALIACOES"), where("instituicao", "==", "Analise e Desenvolvimento de Sistemas (Estacio)"));
+  const snap = await getDocs(q);
+  for (const d of snap.docs) {
+    await deleteDoc(doc(db, "AVALIACOES", d.id));
+    console.log("Removido documento:", d.id);
   }
 
   // 1) Desenvolvimento Front End (13 questoes)
