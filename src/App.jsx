@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { parseQuestionsFromPDF } from './utils/pdfParser';
+import { withSimuladosLocais } from './data/simulados';
 import './App.css';
 
 // Sua configuração do Firebase
@@ -18,9 +19,33 @@ const firebaseConfig = {
 
 // Inicializa o Firebase e o Firestore
 const app = initializeApp(firebaseConfig);
-let analytics;
-try { analytics = getAnalytics(app); } catch (e) { console.warn("Analytics not available:", e); }
+try { getAnalytics(app); } catch (e) { console.warn("Analytics not available:", e); }
 const db = getFirestore(app);
+
+function QuestionText({ text = "", codeStyle = false }) {
+  const partes = String(text).split("```");
+
+  return (
+    <div className={`question-text${codeStyle ? " code-question" : ""}`}>
+      {partes.map((parte, index) => {
+        if (index % 2 === 1) {
+          return (
+            <pre key={index} className="code-block">
+              {parte.replace(/^\n+|\n+$/g, "")}
+            </pre>
+          );
+        }
+        const texto = parte.trim();
+        if (!texto) return null;
+        return (
+          <span key={index} className="question-paragraph">
+            {texto}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 function App() {
   const [dados, setDados] = useState([]);
@@ -42,8 +67,13 @@ function App() {
   const [pdfError, setPdfError] = useState('');
   const [pdfFileName, setPdfFileName] = useState('');
   const [isPdfQuiz, setIsPdfQuiz] = useState(false);
-  const [attempts, setAttempts] = useState([]);
-  const [showHistory, setShowHistory] = useState(false);
+  const [attempts, setAttempts] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("attempts")) || [];
+    } catch {
+      return [];
+    }
+  });
 
   const topicMap = {
     "Desenvolvimento Front End": [
@@ -88,15 +118,20 @@ function App() {
       { min: 11, max: 11, topic: "Tipos de Retorno" },
       { min: 12, max: 12, topic: "Heranca" },
       { min: 13, max: 13, topic: "Operacoes" }
+    ],
+    "Estrutura de Dados e Alocação de Memória": [
+      { min: 0, max: 0, topic: "Listas Encadeadas" },
+      { min: 1, max: 1, topic: "Alocação Dinâmica em C" },
+      { min: 2, max: 2, topic: "Gestão de Memória em C" },
+      { min: 3, max: 3, topic: "Conceitos de Estruturas de Dados" },
+      { min: 4, max: 4, topic: "Bubble Sort" },
+      { min: 5, max: 5, topic: "Árvores de Busca" },
+      { min: 6, max: 6, topic: "Passagem de Parâmetros" },
+      { min: 7, max: 7, topic: "Escopo e Tempo de Vida" },
+      { min: 8, max: 8, topic: "Algoritmos de Ordenação" },
+      { min: 9, max: 9, topic: "Balanceamento AVL" }
     ]
   };
-
-  useEffect(() => {
-    const saved = localStorage.getItem("attempts");
-    if (saved) {
-      try { setAttempts(JSON.parse(saved)); } catch {}
-    }
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,12 +142,12 @@ function App() {
           ...doc.data()
         }));
         
-        setDados(listaAvaliacoes);
+        setDados(withSimuladosLocais(listaAvaliacoes));
         setLoading(false);
       } catch (error) {
         console.error("Erro ao buscar questões do Firestore:", error);
         // Fallback para não quebrar a aplicação caso a coleção esteja vazia ou em branco
-        setDados([
+        setDados(withSimuladosLocais([
           {
             _id: "fallback-id",
             disciplina: "NoSQL",
@@ -133,7 +168,7 @@ function App() {
             ],
             data_criacao: "2026-05-04T22:35:00.000Z"
           }
-        ]);
+        ]));
         setLoading(false);
       }
     };
@@ -240,13 +275,6 @@ function App() {
     }
   };
 
-  const getImprovementTip = (qText) => {
-    if (qText && (qText.includes("Cassandra") || qText.includes("CQL"))) {
-      return "Foque em chaves de partição, chaves de agrupamento e limitações do CQL.";
-    }
-    return "Revise os conceitos e estruturas de banco de dados do material.";
-  };
-
   const handleFileUpload = async (file) => {
     if (!file || file.type !== 'application/pdf') {
       setPdfError('Por favor, selecione um arquivo PDF v\u00e1lido.');
@@ -294,7 +322,6 @@ function App() {
     setScore(0);
     setShowScore(false);
     setUserHistory([]);
-    setShowHistory(false);
   };
 
   const handleRestart = () => {
@@ -572,7 +599,10 @@ function App() {
               <p>
                 Questão {currentQuestion + 1} de {questions.length}
               </p>
-              <p className={`question-text${hasCode(questions[currentQuestion]?.question) ? " code-question" : ""}`}>{questions[currentQuestion]?.question}</p>
+              <QuestionText
+                text={questions[currentQuestion]?.question}
+                codeStyle={hasCode(questions[currentQuestion]?.question)}
+              />
               <div className="options-container">
                 {questions[currentQuestion]?.options.map((option, index) => {
                   const hasAnswer = questions[currentQuestion]?.answer >= 0;

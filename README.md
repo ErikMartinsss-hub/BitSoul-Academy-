@@ -5,6 +5,7 @@ Plataforma de simulados inteligente para estudantes. Escolha sua instituicao, se
 ## Funcionalidades
 
 - **Simulados por Instituicao** — Questoes organizadas por faculdade e disciplina, carregadas do Firebase Firestore.
+- **Simulado embutido** — Avaliacao de *Estrutura de Dados e Alocacao de Memoria* (10 questoes com gabarito) ja vem no app, mesmo sem conexao com o Firestore.
 - **Upload de PDF** — Envie um PDF com questoes de multipla escolha e o sistema extrai automaticamente as perguntas, alternativas e gabarito para criar um simulado personalizado.
 - **Correcao Automatica** — Resposta certa fica verde, errada fica vermelha, com destaque da alternativa correta.
 - **Analise de Desempenho** — Ao final, confira seus acertos e erros, com dicas de melhoria para cada questao.
@@ -46,6 +47,28 @@ O sistema reconhece:
 - Alternativas com (A), A), A., (a), etc.
 - Gabarito ao final do documento (Gabarito:, Respostas:, Resolucao:)
 
+## Simulados embutidos (offline)
+
+Além do Firestore, o app carrega simulados locais de `src/data/simulados.js`.
+Eles aparecem na lista de materias junto com as disciplinas do banco e funcionam
+mesmo se o Firestore estiver fora do ar ou vazio.
+
+Hoje esta incluido:
+
+- **Estrutura de Dados e Alocacao de Memoria** — 10 questoes (listas encadeadas,
+  alocacao dinamica em C, Bubble Sort, arvores de busca, passagem de parametros,
+  escopo/tempo de vida e arvores AVL), com gabarito e desempenho por topico.
+
+### Adicionar um novo simulado local
+
+1. Abra `src/data/simulados.js`.
+2. Adicione as questoes em `questoes` no formato `{ id, enunciado, alternativas, resposta_correta }`
+   (`resposta_correta` = indice da alternativa certa, comecando em 0).
+3. Use `\n` para quebrar linhas no enunciado e ` ``` ` para destacar blocos de codigo.
+4. Para o desempenho por topico, cadastre a disciplina no `topicMap` de `src/App.jsx`.
+5. Opcional: rode `node src/seedEstruturaDados.js` para gravar o simulado tambem no Firestore
+   (o script remove duplicatas da mesma disciplina antes de inserir).
+
 ## Tecnologias
 
 - React 19 — Interface de usuario
@@ -60,6 +83,9 @@ O sistema reconhece:
 src/
   utils/
     pdfParser.js     - Extracao e parsing de questoes de PDF
+  data/
+    simulados.js     - Simulados embutidos (funcionam offline)
+  seedEstruturaDados.js - Publica os simulados locais no Firestore
   App.jsx            - Componente principal (telas, quiz, resultados)
   App.css            - Estilos da aplicacao
   index.css          - Estilos globais
