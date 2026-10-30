@@ -130,6 +130,16 @@ function App() {
       { min: 7, max: 7, topic: "Escopo e Tempo de Vida" },
       { min: 8, max: 8, topic: "Algoritmos de Ordenação" },
       { min: 9, max: 9, topic: "Balanceamento AVL" }
+    ],
+    "Estrutura de Dados: Listas, Pilhas e Filas": [
+      { min: 0, max: 0, topic: "Pilhas e Filas" },
+      { min: 1, max: 1, topic: "Fila x Pilha" },
+      { min: 2, max: 2, topic: "Conceitos de Pilha e Fila" },
+      { min: 3, max: 3, topic: "Aplicação de LIFO" },
+      { min: 4, max: 4, topic: "Lista Sequencial" },
+      { min: 5, max: 5, topic: "Listas Duplamente Encadeadas" },
+      { min: 6, max: 6, topic: "Listas Encadeadas" },
+      { min: 7, max: 7, topic: "FIFO x LIFO" }
     ]
   };
 

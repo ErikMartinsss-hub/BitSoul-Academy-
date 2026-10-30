@@ -58,6 +58,9 @@ Hoje esta incluido:
 - **Estrutura de Dados e Alocacao de Memoria** — 10 questoes (listas encadeadas,
   alocacao dinamica em C, Bubble Sort, arvores de busca, passagem de parametros,
   escopo/tempo de vida e arvores AVL), com gabarito e desempenho por topico.
+- **Estrutura de Dados: Listas, Pilhas e Filas** — 8 questoes (pilhas e filas,
+  lista circular, lista sequencial, listas duplamente encadeadas, FIFO x LIFO),
+  com gabarito e desempenho por topico.
 
 ### Adicionar um novo simulado local
 

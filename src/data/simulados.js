@@ -150,6 +150,94 @@ const questoesEstruturaDados = [
   }
 ];
 
+export const DISCIPLINA_LISTAS_PILHAS = "Estrutura de Dados: Listas, Pilhas e Filas";
+
+// Lista de exercicios - Listas, Pilhas e Filas (8 questoes)
+const questoesListasPilhas = [
+  {
+    id: 1,
+    enunciado:
+      "O acesso ao elemento de uma estrutura de dados tipo pilha se restringe ao mais recente na pilha. Já o acesso a um elemento de uma estrutura tipo fila ocorre ao dado há mais tempo na fila. Sobre pilhas e filas, avalie as assertivas a seguir:\n" +
+      "I - Uma forma de evitar o desperdício de memória numa fila em alocação sequencial é utilizar-se lista circular.\n" +
+      "II - Em uma pilha em alocação encadeada, a complexidade da remoção é O(n).\n" +
+      "III - Pilhas têm a propriedade de inverter a ordem de cadeias, enquanto as filas mantêm a ordem.\n" +
+      "A opção que contém todas as assertivas corretas é:",
+    alternativas: ["I.", "II.", "I e II.", "I e III.", "II e III."],
+    resposta_correta: 3
+  },
+  {
+    id: 2,
+    enunciado:
+      "Um algoritmo armazena uma sequência de dados inteiros primeiramente em uma fila, e depois transfere todos os elementos, na ordem de remoção da fila, para uma pilha. Em seguida, os dados são retirados da pilha e reinseridos em uma nova fila.\n" +
+      "Sobre esse processo, é correto afirmar que:",
+    alternativas: [
+      "A fila final terá exatamente a mesma ordem de elementos da fila inicial.",
+      "A pilha armazena os elementos na mesma ordem da fila, mantendo o primeiro elemento no topo.",
+      "A fila final terá os elementos ordenados de forma decrescente, caso os dados de entrada estejam em ordem crescente.",
+      "A fila final terá os elementos em ordem inversa à fila inicial.",
+      "A pilha remove os elementos na mesma ordem em que foram inseridos nela."
+    ],
+    resposta_correta: 3
+  },
+  {
+    id: 3,
+    enunciado:
+      "Várias estruturas de dados podem ser utilizadas para armazenar dados de uma aplicação. Em relação ao assunto, assinale a alternativa correta.",
+    alternativas: [
+      "A estrutura de dados do tipo pilha sempre retira os elementos que foram inseridos primeiro na estrutura.",
+      "A estrutura de dados do tipo lista utiliza a ideia do primeiro a chegar, primeiro a ser servido para inserir elementos.",
+      "A estrutura de dados do tipo fila sempre retira os elementos que entraram por último na fila.",
+      "A estrutura de dados do tipo pilha, para retirar o elemento do topo da pilha, é necessário retirar o elemento da base da pilha.",
+      "A estrutura de dados do tipo fila utiliza a ideia do primeiro a ser inserido, será o primeiro a ser retirado."
+    ],
+    resposta_correta: 4
+  },
+  {
+    id: 4,
+    enunciado:
+      "(FGV/2022) Júlio está desenvolvendo uma aplicação e precisa implementar um mecanismo de desfazer/refazer de um editor de texto utilizando o algoritmo LIFO (Last In, First Out). Para implementar o algoritmo LIFO, Júlio deve usar a estrutura de dados:",
+    alternativas: ["Fila", "Pilha", "Árvore", "Nó folha", "Tabela hash"],
+    resposta_correta: 1
+  },
+  {
+    id: 5,
+    enunciado: "Uma lista ordenada alocada sequencialmente possui como desvantagem:",
+    alternativas: [
+      "Complexidade O(n) para a busca.",
+      "Impossibilidade de remoção no meio da lista.",
+      "Tamanho limitado de memória alocada para lista.",
+      "Impossibilidade de acesso direto.",
+      "A reserva de memória em posições contíguas."
+    ],
+    resposta_correta: 2
+  },
+  {
+    id: 6,
+    enunciado:
+      "Sobre listas duplamente encadeadas, afirma-se:\n" +
+      "I) Cada nó usa o dobro do número de campos ponteiro de uma lista simplesmente encadeada.\n" +
+      "II) A complexidade de remoção é metade da complexidade de remoção em lista simplesmente encadeada.\n" +
+      "III) Não permitem a inserção de nó no meio da lista.\n" +
+      "É correto apenas:",
+    alternativas: ["I.", "II.", "III.", "I e III.", "II e III."],
+    resposta_correta: 0
+  },
+  {
+    id: 7,
+    enunciado:
+      "(IBADE/2022) Uma estrutura de dados onde existe uma coleção ordenada de entidades sendo a metodologia de busca com base no deslocamento relativo ao primeiro (cabeça) da coleção, chama-se:",
+    alternativas: ["Árvore.", "Lista.", "Pilha.", "Fila.", "Árvore binária."],
+    resposta_correta: 1
+  },
+  {
+    id: 8,
+    enunciado:
+      "(IBFC/2022 - Adaptada) Assinale, das alternativas abaixo, a única que identifica respectivamente uma Estrutura de Dados do tipo FIFO (First In, First Out) e uma outra com a Estrutura de dados do tipo LIFO (Last In, First Out):",
+    alternativas: ["Lista - vetor", "Pilha - fila", "Vetor - lista", "Fila - pilha", "Matriz - vetor"],
+    resposta_correta: 3
+  }
+];
+
 export const SIMULADOS_LOCAIS = [
   {
     _id: "local-estrutura-de-dados",
@@ -157,6 +245,14 @@ export const SIMULADOS_LOCAIS = [
     disciplina: DISCIPLINA_ESTRUTURA_DADOS,
     questoes: questoesEstruturaDados,
     data_criacao: "2026-10-29T00:00:00.000Z",
+    local: true
+  },
+  {
+    _id: "local-listas-pilhas-filas",
+    instituicao: INSTITUICAO_PADRAO,
+    disciplina: DISCIPLINA_LISTAS_PILHAS,
+    questoes: questoesListasPilhas,
+    data_criacao: "2026-10-30T00:00:00.000Z",
     local: true
   }
 ];
